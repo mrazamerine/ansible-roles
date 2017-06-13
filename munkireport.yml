@@ -1,0 +1,7 @@
+---
+- hosts: munkireport
+  remote_user: root
+  roles:
+    - common
+    - mysql
+    - munkireport
