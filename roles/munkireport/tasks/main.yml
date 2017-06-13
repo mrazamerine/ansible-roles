@@ -1,0 +1,128 @@
+# Munkireport tasks
+---
+- name: create munkireport user
+  user:
+    name: munkireport
+    comment: "MunkiReport User"
+    shell: /bin/bash
+    system: yes
+
+- name: add letsencrypt certbot repo
+  apt_repository:
+    repo: ppa:certbot/certbot
+
+- name: install required packages - munkireport
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - certbot
+    - nginx
+    - openssl
+    - php7.0-fpm
+    - php7.0-mysql
+    - php7.0-xml
+    - python-certbot-nginx
+
+- name: create munkireport mysql database
+  mysql_db:
+    db: munkireport
+    state: present
+    encoding: utf8
+    collation: utf8_bin
+
+- name: create munkireport mysql user
+  mysql_user:
+    name: mysql_munkireport_user
+    password: "{{ mysql_munkireport_password }}"
+    priv: 'munkireport.*:ALL,GRANT'
+    state: present
+
+- name: modify php settings
+  lineinfile:
+    path: /etc/php/7.0/fpm/php.ini
+    regexp: '.*cgi.fix_pathinfo='
+    line: 'cgi.fix_pathinfo=0'
+  notify:
+    - restart nginx
+    - restart php7
+
+- name: clone munkireport github repo
+  git:
+    repo: 'https://github.com/munkireport/munkireport-php.git'
+    dest: /usr/share/nginx/html/munkireport
+    clone: yes
+    update: yes
+  notify:
+    - restart nginx
+    - restart php7
+
+- name: apply munkireport config.php template
+  template:
+    src: config.php.j2
+    dest: /usr/share/nginx/html/munkireport/config.php
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart nginx
+    - restart php7
+
+- name: apply nginx sites-available template
+  template:
+    src: sites-available.munkireport.j2
+    dest: /etc/nginx/sites-available/munkireport
+    owner: root
+    group: root
+    mode: 0644
+    #backup: yes
+    force: "{{ update_munkireport_sites_available }}"
+  register: munkireport_sites_available
+  notify:
+    - restart nginx
+
+- name: remove default from nginx sites-enabled
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - restart nginx
+    - restart php7
+
+- name: add munkireport to nginx sites-enabled
+  file:
+    src: /etc/nginx/sites-available/munkireport
+    dest: /etc/nginx/sites-enabled/munkireport
+    state: link
+  notify:
+    - restart nginx
+    - restart php7
+
+- name: create letsencrypt cert
+  shell: "certbot --nginx --redirect --agree-tos --quiet {{ letsencrypt_email }} -d {{ munkireport_domain_name }}"
+  when: munkireport_sites_available.changed
+
+- name: modify nginx config file
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    regexp: '.*default_type application/octet-stream;'
+    line: '#default_type application/octet-stream;'
+  notify:
+    - restart nginx
+
+- name: create renew cert cron job
+  cron:
+    name: "renew letsencrypt cert"
+    minute: "0"
+    hour: "6"
+    weekday: "1"
+    user: root
+    job: '/usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload nginx"'
+
+- name: ensure web services are running
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - nginx
+    - php7.0-fpm
