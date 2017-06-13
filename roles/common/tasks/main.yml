@@ -1,0 +1,25 @@
+---
+- name: update/upgrade packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    upgrade: yes
+    autoremove: yes
+
+- name: install required packages - common
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - aptitude
+    - fail2ban
+    - openssh-server
+    - python
+    - python-apt
+    - python3-apt
+    - ufw
+
+- name: enable firewall
+  ufw:
+    state: enabled
+    policy: allow
