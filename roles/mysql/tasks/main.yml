@@ -1,0 +1,35 @@
+# MySQL tasks
+---
+- name: install required packages - mysql
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - mysql-client
+    - mysql-server
+    - python-mysqldb
+
+- name: create mysql root credentials
+  template:
+    src: mysql_root_credentials.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0600
+    backup: yes
+    
+- name: create mysql root user
+  mysql_user:
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: localhost
+
+- name: remove anonymous mysql users
+  mysql_user:
+    name: ''
+    state: absent
+
+- name: remove mysql test database
+  mysql_db:
+    db: test
+    state: absent
