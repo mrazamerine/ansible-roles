@@ -3,15 +3,10 @@ server {
         listen 80 default_server;
         listen [::]:80 default_server;
         
-        # SSL configuration
-        
-        #listen 443 ssl default_server;
-        #listen [::]:443 default_server;
+        server_name {{ munkireport_domain_name }};
     
         root /usr/share/nginx/html;
         index index.php index.html index.htm;
-        
-        server_name {{ munkireport_nginx_fqdn }};
         
         error_page 404 /404.html;
         error_page 500 502 503 504 /50x.html;

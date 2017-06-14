@@ -7,6 +7,22 @@
     shell: /bin/bash
     system: yes
 
+- name: create facts.d directory
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+
+- name: apply munkireport.fact template
+  template:
+    src: munkireport.fact.j2
+    dest: /etc/ansible/facts.d/munkireport.fact
+    mode: 0755
+
+- name: check local facts
+  setup:
+    fact_path: /etc/ansible/facts.d
+    filter: ansible_local*
+
 - name: add letsencrypt certbot repo
   apt_repository:
     repo: ppa:certbot/certbot
@@ -70,13 +86,11 @@
 
 - name: apply nginx sites-available template
   template:
-    src: sites-available.munkireport.j2
+    src: "{{ ansible_local.munkireport.letsencrypt.sites_available }}sites-available.munkireport.j2"
     dest: /etc/nginx/sites-available/munkireport
     owner: root
     group: root
     mode: 0644
-    #backup: yes
-    force: "{{ update_munkireport_sites_available }}"
   register: munkireport_sites_available
   notify:
     - restart nginx
@@ -99,7 +113,7 @@
     - restart php7
 
 - name: create letsencrypt cert
-  shell: "certbot --nginx --redirect --agree-tos --quiet {{ letsencrypt_email }} -d {{ munkireport_domain_name }}"
+  shell: "certbot --nginx certonly --agree-tos --quiet {{ letsencrypt_email }} -d {{ munkireport_domain_name }}"
   when: munkireport_sites_available.changed
 
 - name: modify nginx config file

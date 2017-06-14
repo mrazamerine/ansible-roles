@@ -67,6 +67,10 @@ munkireport_site_name: "MunkiReport – Mraz Amerine"
 
 mysql_munkireport_password: mysqlmunkireportpassword
 
+redirect: "# SSL redirect here"
+
+ssl_settings: "# SSL settings here"
+
 time_zone: "'America/Los_Angles'"
 
 update_munkireport_sites_available: yes
