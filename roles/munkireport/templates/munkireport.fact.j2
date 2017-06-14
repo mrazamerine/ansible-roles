@@ -1,8 +1,26 @@
 #!/bin/bash
 
 
+# Variables
+
+CERT_INSTALLED=$(if [ -d /etc/letsencrypt/live/{{ munkireport_domain_name }} ]; then echo 'True'; else echo 'False'; fi)
+
+CONFIG_INSTALLED=$(if [ -f /etc/letsencrypt/options-ssl-nginx.conf ]]; then echo 'True'; else echo 'False'; fi)
+
+SITES_AVAILABLE=$(
+    if [[ -d /etc/letsencrypt/live/{{ munkireport_domain_name }} && -f /etc/letsencrypt/options-ssl-nginx.conf ]];
+    then
+        echo 'letsencrypt.';
+    else
+        echo '';
+    fi
+)
+
+
+# Facts
+
 echo [letsencrypt]
 
-echo cert_installed=$(if [ -d /etc/letsencrypt/live/{{ munkireport_domain_name }} ]; then echo 'True'; else echo 'False'; fi)
-echo config_installed=$(if [ -f /etc/letsencrypt/options-ssl-nginx.conf }} ]]; then echo 'True'; else echo 'False'; fi)
-echo sites_available=$(if [[ $cert_installed = 'True' && $config_installed = 'True' ]]; then echo 'letsencrypt.'; else echo ''; fi)
+echo cert_installed=$(echo "$CERT_INSTALLED")
+echo config_installed=$(echo "$CONFIG_INSTALLED")
+echo sites_available=$(echo "$SITES_AVAILABLE")
