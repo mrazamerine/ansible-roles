@@ -1,25 +1,42 @@
 # Munkireport defaults
 ---
-letsencrypt_email: --register-unsafely-without-email
-# Use -m if overriding
+
+letsencrypt_email: --register-unsafely-without-email # Use -m if overriding
 
 letsencrypt_force_renew: no
     
 mac_local_admin_username: mac-admin
 
-munkireport_credentials: "$auth_config['root'] = '$P$BUqxGuzR2VfbSvOtjxlwsHTLIMTmuw0'; // Password is root"
-# Be sure to create new credentials
+munkireport_allow_migrations: FALSE
+
+munkireport_apps_to_track: |
+  'Backblaze',
+  'Google Chrome',
+  'iTunes',
+  'LastPass',
+  'Microsoft Excel',
+  'Microsoft OneNote',
+  'Microsoft Outlook',
+  'Microsoft PowerPoint',
+  'Microsoft Word',
+  'Money.Net',
+  'Server',
+  'Safari'
+
+munkireport_client_passphrases: mrazamerinesecretpassphrase
+
+munkireport_credentials: "$auth_config['root'] = '$P$BzPiLczNEhg5gigTTBuU.3i1WFsn.b0'; // Password is hJ4UVuxMJQmRe9FMAeH4XPxAR6qDw7hKyDkwtGUabetwXJ3yvgCqCGz4hnQFST8q"
+
+munkireport_debug: TRUE
 
 munkireport_domain_name: munkireport.mrazamerine.com
 
 munkireport_modules: |
   'appusage',
   'ard',
-  'backup2go',
   'bluetooth',
   'caching',
   'certificate',
-  'crashplan',
   'deploystudio',
   'directory_service',
   'disk_report',
@@ -46,7 +63,6 @@ munkireport_modules: |
   'power',
   'printer',
   'profile',
-  'sccm_status',
   'security',
   'servermetrics',
   'service',
@@ -58,19 +74,12 @@ munkireport_modules: |
   'warranty',
   'wifi'
 
-munkireport_nginx_fqdn: "{{ ansible_fqdn }} {{ ansible_default_ipv4.address }} {{ munkireport_domain_name }}"
+munkireport_roles_admins: root
 
-munkireport_client_passphrases:
-# Default is blank, add secret passphrase in production
+munkireport_roles_users:
 
 munkireport_site_name: "MunkiReport – Mraz Amerine"
 
 mysql_munkireport_password: mysqlmunkireportpassword
 
-redirect: "# SSL redirect here"
-
-ssl_settings: "# SSL settings here"
-
 time_zone: "'America/Los_Angles'"
-
-update_munkireport_sites_available: yes
