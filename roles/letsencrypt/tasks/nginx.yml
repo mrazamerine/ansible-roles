@@ -1,0 +1,30 @@
+# Nginx LetsEncrypt tasks
+---
+- name: install required packages - letsencrypt-nginx
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - nginx
+    - python-certbot-nginx
+
+- name: create letsencrypt cert
+  shell: "certbot --nginx certonly --agree-tos --quiet {{ letsencrypt_email }} -d {{ letsencrypt_domain_name }}"
+  creates: /etc/letsencrypt/live/{{ letsencrypt_domain_name }}/fullchain.pem
+  #when:
+
+- name: create ssl config file
+  template:
+    src: ssl.conf.j2
+    dest: "/etc/nginx/snippets//ssl-{{ letsencrypt_domain_name }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy nginx ssl-params config file
+  copy:
+    src: ssl-params.conf
+    dest: /etc/nginx/snippets/ssl-params.conf
+    owner: root
+    group: root
+    mode: 0644

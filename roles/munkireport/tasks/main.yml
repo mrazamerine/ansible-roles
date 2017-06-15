@@ -23,22 +23,15 @@
     fact_path: /etc/ansible/facts.d
     filter: ansible_local*
 
-- name: add letsencrypt certbot repo
-  apt_repository:
-    repo: ppa:certbot/certbot
-
 - name: install required packages - munkireport
   apt:
     name: "{{ item }}"
     state: latest
   with_items:
-    - certbot
     - nginx
-    - openssl
     - php7.0-fpm
     - php7.0-mysql
     - php7.0-xml
-    - python-certbot-nginx
 
 - name: create munkireport mysql database
   mysql_db:
@@ -112,10 +105,6 @@
     - restart nginx
     - restart php7
 
-- name: create letsencrypt cert
-  shell: "certbot --nginx certonly --agree-tos --quiet {{ letsencrypt_email }} -d {{ munkireport_domain_name }}"
-  when: munkireport_sites_available.changed
-
 - name: modify nginx config file
   lineinfile:
     path: /etc/nginx/nginx.conf
@@ -123,15 +112,6 @@
     line: '#default_type application/octet-stream;'
   notify:
     - restart nginx
-
-- name: create renew cert cron job
-  cron:
-    name: "renew letsencrypt cert"
-    minute: "0"
-    hour: "6"
-    weekday: "1"
-    user: root
-    job: '/usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload nginx"'
 
 - name: ensure web services are running
   service:

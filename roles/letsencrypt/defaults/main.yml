@@ -1,0 +1,5 @@
+# LetsEncrypt defaults
+---
+diffie_hellman_size: 2048
+
+#webroot-path: /var/www/html

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+echo [ssl]
+# DH group exists
+echo dh-group=$(if [ -e /etc/ssl/certs/dhparam.pem ]; then echo 'exists'; else echo 'none'; fi)
+
+
+echo [certs]
+# LE cert exists
+echo le-cert=$(if [ -e /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem ]; then echo 'exists'; else echo 'none'; fi)
+
+
+echo [apache]
+
+
+echo [nginx]

@@ -1,0 +1,19 @@
+#
+---
+- name: create facts.d directory
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+
+- name: apply letsencrypt.fact template
+  template:
+    src: letsencrypt.fact.j2
+    dest: /etc/ansible/facts.d/letsencrypt.fact
+    mode: 0755
+  register: letsencrypt_fact
+
+- name: check local facts
+  setup:
+    fact_path: /etc/ansible/facts.d
+    filter: ansible_local*
+  when: letsencrypt_fact.changed
