@@ -8,12 +8,12 @@
 - name: apply letsencrypt.fact template
   template:
     src: letsencrypt.fact.j2
-    dest: "/etc/ansible/facts.d/{{ letsencrypt_fact_name }}_letsencrypt.fact"
+    dest: "/etc/ansible/facts.d/{{ letsencrypt_fact_name }}.fact"
     mode: 0755
-  register: "{{ letsencrypt_fact_name }}_letsencrypt_fact"
+  register: update_facts
 
 - name: check local facts
   setup:
     fact_path: /etc/ansible/facts.d
     filter: ansible_local*
-  when: "{{ letsencrypt_fact_name }}_letsencrypt_fact.changed"
+  when: update_facts.changed

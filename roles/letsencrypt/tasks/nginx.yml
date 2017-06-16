@@ -10,7 +10,7 @@
 
 - name: create letsencrypt cert
   shell: "certbot --nginx certonly --agree-tos --quiet {{ letsencrypt_email }} -d {{ letsencrypt_domain_name }} {{ letsencrypt_additional_domains }}"
-  when: "ansible_local.{{ letsencrypt_fact_name }}_letsencrypt.certificate.installed != 'True'"
+  when: ansible_local[letsencrypt_fact_name]['certificate']['installed'] != 'True'
 
 - name: create ssl config file
   template:

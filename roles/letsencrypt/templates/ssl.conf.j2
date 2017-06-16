@@ -1,2 +1,2 @@
-ssl_certificate "{{ ansible_local.{{ letsencrypt_fact_name }}_letsencrypt.certificate.cert_path }}";
-ssl_certificate_key "{{ ansible_local.{{ letsencrypt_fact_name }}_letsencrypt.certificate.cert_path }}";
+ssl_certificate {{ ansible_local[letsencrypt_fact_name]['certificate']['cert_path'] }};
+ssl_certificate_key {{ ansible_local[letsencrypt_fact_name]['certificate']['key_path'] }};
