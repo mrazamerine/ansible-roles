@@ -2,4 +2,6 @@
 ---
 diffie_hellman_size: 2048
 
+letsencrypt_additional_domains:
+
 #webroot-path: /var/www/html

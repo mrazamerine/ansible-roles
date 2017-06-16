@@ -22,9 +22,9 @@
 
 - name: generate Diffie-Hellman group
   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem {{ diffie_hellman_size }}
-  creates: /etc/ssl/certs/dhparam.pem
+  when: "ansible_local.{{ letsencrypt_fact_name }}_letsencrypt.ssl.diffie_hellman_group != 'True'"
 
-- include: {{ webserver }}.yml
+- include: "{{ letsencrypt_webserver }}.yml"
 
 - name: create renew cert cron job
   cron:
@@ -33,4 +33,4 @@
     hour: "1"
     weekday: "1"
     user: root
-    job: '/usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload {{ webserver }}"'
+    job: '/usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload {{ letsencrypt_webserver }}"'
