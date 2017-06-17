@@ -1,0 +1,13 @@
+#!/bin/sh
+
+
+SWAPFILE_LS_RESULT=$(ls -lh /swapfile)
+
+SWAPFILE_SIZE_FULL=$(echo "$SWAPFILE_LS_RESULT" | sed -n -r 's/^.* root root ([0-9\.]+[GM]).*/\1/p')
+
+SWAPFILE_SIZE=$(echo "$SWAPFILE_SIZE_FULL" | sed -n -r 's/^([0-9]+)\.[0-9]*([GM])/\1\2/p')
+
+
+echo [swapfile]
+echo correct_size=$(if [ "$SWAPFILE_SIZE_FULL" = '{{ swap_size }}' ] || [ "$SWAPFILE_SIZE" = '{{ swap_size }}' ]; then echo 'True'; else echo 'False'; fi)
+echo swap_on=$(if swapon --show | grep -q "/swapfile"; then echo 'True'; else echo 'False'; fi)

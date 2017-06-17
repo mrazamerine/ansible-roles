@@ -1,0 +1,7 @@
+# Defaults - main.yml
+---
+cache_pressure: 50
+
+swap_size: 1G
+
+swappiness: 10
