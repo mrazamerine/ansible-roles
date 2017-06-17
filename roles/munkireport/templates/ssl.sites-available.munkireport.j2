@@ -18,8 +18,7 @@ server {
         
         server_name {{ munkireport_domain_name }};
         
-        ssl_certificate /etc/letsencrypt/live/{{ munkireport_domain_name }}/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/{{ munkireport_domain_name }}/privkey.pem;
+        include snippets/ssl-{{ munkireport_domain_name }}.conf;
         include /etc/nginx/snippets/ssl-params.conf;
         
         root /usr/share/nginx/html;
