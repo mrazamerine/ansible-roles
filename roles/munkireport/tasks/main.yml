@@ -1,4 +1,4 @@
-# Munkireport tasks
+# MunkiReport tasks - main.yml
 ---
 - name: create munkireport user
   user:

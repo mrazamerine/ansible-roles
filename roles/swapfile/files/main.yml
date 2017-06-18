@@ -1,5 +1,0 @@
-# Swapfile defaults
----
-cache_pressure: 50
-
-swappiness: 10

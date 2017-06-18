@@ -1,4 +1,4 @@
-# Swapfile tasks
+# Swapfile tasks - main.yml
 ---
 - name: include swapfile facts
   include: facts.yml

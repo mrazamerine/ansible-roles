@@ -1,4 +1,4 @@
-# Munkireport defaults
+# MunkiReport defaults - main.yml
 ---
 
 letsencrypt_email: --register-unsafely-without-email # Use -m if overriding

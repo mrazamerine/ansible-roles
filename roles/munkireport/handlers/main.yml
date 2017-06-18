@@ -1,4 +1,4 @@
-# Munkireport handlers - main.yml
+# MunkiReport handlers - main.yml
 ---
 - name: restart php7
   service:

@@ -1,4 +1,4 @@
-# Defaults - main.yml
+# Swapfile defaults - main.yml
 ---
 cache_pressure: 50
 

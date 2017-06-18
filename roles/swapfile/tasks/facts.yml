@@ -1,4 +1,4 @@
-# Tasks - facts.yml
+# Swapfile tasks - facts.yml
 ---
 - name: create facts.d directory
   file:

@@ -1,4 +1,4 @@
-# MySQL tasks
+# MySQL tasks - main.yml
 ---
 - name: install required packages - mysql
   apt:

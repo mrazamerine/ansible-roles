@@ -1,4 +1,4 @@
-# Nginx LetsEncrypt tasks
+# LetsEncrypt tasks - nginx.yml
 ---
 - name: install required packages - letsencrypt-nginx
   apt:

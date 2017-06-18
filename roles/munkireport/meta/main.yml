@@ -1,4 +1,4 @@
-# Munkireport meta - main.yml
+# MunkiReport meta - main.yml
 ---
 dependencies:
   - { role: nginx }
