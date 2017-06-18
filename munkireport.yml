@@ -3,5 +3,6 @@
   remote_user: root
   roles:
     - common
-    - mysql
     - munkireport
+    - { role: letsencrypt, letsencrypt_domain_name: "{{ munkireport_domain_name }}", letsencrypt_fact_name: munkireport_letsencrypt, letsencrypt_webserver: nginx }
+    - swapfile
