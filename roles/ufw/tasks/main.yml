@@ -3,13 +3,12 @@
 - name: allow ssh
   ufw:
     rule: allow
-    name: ssh
+    port: ssh
 
 - name: rate limit ssh
   ufw:
     rule: limit
     port: ssh
-    proto: tcp
 
 - name: deny incoming traffic by default
   ufw:
