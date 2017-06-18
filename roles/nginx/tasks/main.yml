@@ -1,0 +1,20 @@
+# Nginx tasks - main.yml
+---
+- name: install required packages - nginx
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - nginx
+
+- name: remove default from nginx sites-enabled
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - restart nginx
+
+- name: ensure nginx is running
+  service:
+    name: nginx
+    state: started

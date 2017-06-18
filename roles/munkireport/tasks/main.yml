@@ -28,7 +28,6 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - nginx
     - php7.0-fpm
     - php7.0-mysql
     - php7.0-xml
@@ -87,14 +86,6 @@
   register: munkireport_sites_available
   notify:
     - restart nginx
-
-- name: remove default from nginx sites-enabled
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-  notify:
-    - restart nginx
-    - restart php7
 
 - name: add munkireport to nginx sites-enabled
   file:
