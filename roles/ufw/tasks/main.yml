@@ -1,0 +1,26 @@
+# UFW tasks - main.yml
+---
+- name: allow ssh
+  ufw:
+    rule: allow
+    name: ssh
+
+- name: rate limit ssh
+  ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+
+- name: deny incoming traffic by default
+  ufw:
+    direction: incoming
+    policy: deny
+
+- name: allow outgoing traffic by default
+  ufw:
+    direction: outgoing
+    policy: allow
+
+- name: enable firewall
+  ufw:
+    state: enabled

@@ -19,8 +19,3 @@
     - python-apt
     - python3-apt
     - ufw
-
-- name: enable firewall
-  ufw:
-    state: enabled
-    policy: allow

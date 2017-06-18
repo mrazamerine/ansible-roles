@@ -1,6 +1,0 @@
-# Common handlers - main.yml
----
-- name: restart apache
-  service:
-    name: apache
-    state: restarted
