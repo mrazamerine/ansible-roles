@@ -7,21 +7,8 @@
     shell: /bin/bash
     system: yes
 
-- name: create facts.d directory
-  file:
-    path: /etc/ansible/facts.d
-    state: directory
-
-- name: apply munkireport.fact template
-  template:
-    src: munkireport.fact.j2
-    dest: /etc/ansible/facts.d/munkireport.fact
-    mode: 0755
-
-- name: check local facts
-  setup:
-    fact_path: /etc/ansible/facts.d
-    filter: ansible_local*
+- name: include facts tasks
+  include: facts.yml
 
 - name: install required packages - munkireport
   apt:
@@ -32,28 +19,8 @@
     - php7.0-mysql
     - php7.0-xml
 
-- name: create munkireport mysql database
-  mysql_db:
-    db: munkireport
-    state: present
-    encoding: utf8
-    collation: utf8_bin
-
-- name: create munkireport mysql user
-  mysql_user:
-    name: mysql_munkireport_user
-    password: "{{ mysql_munkireport_password }}"
-    priv: 'munkireport.*:ALL,GRANT'
-    state: present
-
-- name: modify php settings
-  lineinfile:
-    path: /etc/php/7.0/fpm/php.ini
-    regexp: '.*cgi.fix_pathinfo='
-    line: 'cgi.fix_pathinfo=0'
-  notify:
-    - restart nginx
-    - restart php7
+- name: include mysql tasks
+  include: mysql.yml
 
 - name: clone munkireport github repo
   git:
@@ -61,6 +28,15 @@
     dest: /usr/share/nginx/html/munkireport
     clone: yes
     update: yes
+  notify:
+    - restart nginx
+    - restart php7
+
+- name: modify php settings
+  lineinfile:
+    path: /etc/php/7.0/fpm/php.ini
+    regexp: '.*cgi.fix_pathinfo='
+    line: 'cgi.fix_pathinfo=0'
   notify:
     - restart nginx
     - restart php7
@@ -76,33 +52,8 @@
     - restart nginx
     - restart php7
 
-- name: apply nginx sites-available template
-  template:
-    src: "{{ ansible_local.munkireport.ssl.sites_available }}sites-available.munkireport.j2"
-    dest: /etc/nginx/sites-available/munkireport
-    owner: root
-    group: root
-    mode: 0644
-  register: munkireport_sites_available
-  notify:
-    - restart nginx
-
-- name: add munkireport to nginx sites-enabled
-  file:
-    src: /etc/nginx/sites-available/munkireport
-    dest: /etc/nginx/sites-enabled/munkireport
-    state: link
-  notify:
-    - restart nginx
-    - restart php7
-
-- name: modify nginx config file
-  lineinfile:
-    path: /etc/nginx/nginx.conf
-    regexp: '.*default_type application/octet-stream;'
-    line: '#default_type application/octet-stream;'
-  notify:
-    - restart nginx
+- name: include nginx tasks
+  include: nginx.yml
 
 - name: ensure web services are running
   service:

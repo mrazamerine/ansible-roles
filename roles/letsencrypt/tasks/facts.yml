@@ -10,10 +10,10 @@
     src: letsencrypt.fact.j2
     dest: "/etc/ansible/facts.d/{{ letsencrypt_fact_name }}.fact"
     mode: 0755
-  register: update_facts
+  register: update_letsencrypt_facts
 
 - name: check local facts
   setup:
     fact_path: /etc/ansible/facts.d
     filter: ansible_local*
-  when: update_facts.changed
+  when: update_letsencrypt_facts.changed
