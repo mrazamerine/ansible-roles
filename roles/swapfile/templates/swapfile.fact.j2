@@ -9,5 +9,6 @@ SWAPFILE_SIZE=$(echo "$SWAPFILE_SIZE_FULL" | sed -n -r 's/^([0-9]+)\.[0-9]*([GM]
 
 
 echo [swapfile]
+echo exists=$(if [ -e /swapfile ]; then echo 'True'; else echo 'False'; fi)
 echo correct_size=$(if [ "$SWAPFILE_SIZE_FULL" = '{{ swap_size }}' ] || [ "$SWAPFILE_SIZE" = '{{ swap_size }}' ]; then echo 'True'; else echo 'False'; fi)
 echo swap_on=$(if swapon --show | grep -q "/swapfile"; then echo 'True'; else echo 'False'; fi)

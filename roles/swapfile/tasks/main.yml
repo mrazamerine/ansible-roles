@@ -3,6 +3,13 @@
 - name: include swapfile facts
   include: facts.yml
 
+- name: disable incorrectly sized swapfile
+  command: swapoff /swapfile
+  when: 
+    - ansible_local.swapfile.swapfile.exists == 'True'
+    - ansible_local.swapfile.swapfile.correct_size != 'True'
+    - ansible_local.swapfile.swapfile.swap_on == 'True'
+
 - name: allocate space for swapfile
   command: "fallocate -l {{ swap_size }} /swapfile"
   when: ansible_local.swapfile.swapfile.correct_size != 'True'
