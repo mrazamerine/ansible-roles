@@ -1,11 +1,15 @@
 # Common tasks - main.yml
 ---
-- name: update/upgrade packages
+- name: update packages
   apt:
     update_cache: yes
     cache_valid_time: 3600
+
+- name: upgrade packages
+  apt:
     upgrade: yes
     autoremove: yes
+  when: upgrade_packages
 
 - name: install required packages - common
   apt:
