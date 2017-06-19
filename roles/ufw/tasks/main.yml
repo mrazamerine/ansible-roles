@@ -2,11 +2,6 @@
 ---
 - name: allow ssh
   ufw:
-    rule: allow
-    port: ssh
-
-- name: rate limit ssh
-  ufw:
     rule: limit
     port: ssh
 
