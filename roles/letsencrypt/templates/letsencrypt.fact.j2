@@ -1,8 +1,13 @@
 #!/bin/sh
 
+
 CERTIFICATE_INFO=$(certbot certificates --cert-name {{ letsencrypt_domain_name }})
+EMAIL_ADDRESS=$("{{ letsencrypt_email }}")
 
 
+
+echo [certbot]
+echo email=$(if [ "$EMAIL_ADDRESS" == '' ]; then echo '--register-unsafely-without-email'; else echo '-m'; fi)
 
 echo [ssl]
 echo diffie_hellman_group=$(if [ -e /etc/ssl/certs/dhparam.pem ]; then echo 'True'; else echo 'False'; fi)

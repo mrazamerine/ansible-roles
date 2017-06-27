@@ -1,5 +1,0 @@
-#MunkiReport vars - main.yml
----
-munkireport_credentials: "$auth_config['jfgrant'] = '$P$BNzDK8dsR/Mvd4b67auyO.veiX1Qox0';"
-
-munkireport_roles_admins: 'jfgrant'
