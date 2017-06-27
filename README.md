@@ -1,5 +1,5 @@
-# mrazamerine-ansible
+# mrazamerine-ansible-roles
 
-A collection of Ansible playbooks, roles, and code used by Mraz, Amerine & Associates.
+A collection of Ansible roles used by Mraz, Amerine & Associates.
 
-Developed by Jacob F. Grant.
+Created by Jacob F. Grant.

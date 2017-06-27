@@ -14,7 +14,7 @@ munkireport_credentials:
 
 munkireport_debug: TRUE
 
-munkireport_domain_name: {{ ansible_local.ansible_default_ipv4.address }}
+munkireport_domain_name: "{{ ansible_local.ansible_default_ipv4.address }}"
 
 munkireport_modules: |
   'appusage',
