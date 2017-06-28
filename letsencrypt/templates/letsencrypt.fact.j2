@@ -2,7 +2,7 @@
 
 
 CERTIFICATE_INFO=$(certbot certificates --cert-name {{ letsencrypt_domain_name }})
-EMAIL_ADDRESS=$("{{ letsencrypt_email }}")
+EMAIL_ADDRESS="{{ letsencrypt_email }}"
 
 
 

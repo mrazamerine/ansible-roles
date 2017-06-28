@@ -4,4 +4,4 @@ diffie_hellman_size: 2048
 
 letsencrypt_additional_domains:
 
-letsencrypt_email: 
+letsencrypt_email:
