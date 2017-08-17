@@ -1,5 +1,13 @@
 # Nginx tasks - main.yml
 ---
+- name: ufw - allow http/https connections
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  with_items:
+    - http
+    - https
+
 - name: install required packages - nginx
   apt:
     name: "{{ item }}"
