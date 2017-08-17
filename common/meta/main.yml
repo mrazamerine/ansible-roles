@@ -1,4 +1,0 @@
-# Common dependencies - main.yml
----
-dependencies:
-   - { role: ufw }
