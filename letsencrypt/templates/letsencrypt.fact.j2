@@ -1,28 +1,42 @@
-#!/bin/sh
+#!/usr/bin/env python
+
+import os
+import json
+import subprocess
+import re
 
 
-CERTIFICATE_INFO=$(certbot certificates --cert-name {{ letsencrypt_domain_name }})
-EMAIL_ADDRESS="{{ letsencrypt_email }}"
+# Regex string:
+REGEX = 'Certificate Name: ([0-9a-zA-Z\-\.]*)\\n\s*Domains: ([0-9a-zA-Z\-\.\,]*)\\n\s*Expiry Date: ([0-9\-\+\: ]+)\+00:00\s*\(VALID: ([0-9]{1,2}) days\)\\n\s*Certificate Path: (/[0-9a-zA-Z\/\.\-]+)\\n\s*Private Key Path: (/[0-9a-zA-Z\/\.\-]+)\\n'
 
 
+def certificate_info():
+    """Return LetsEncrypt certificate info as a dict"""
+    certificates = {}
+    try:
+        certbot = subprocess.check_output(['sudo', 'certbot', 'certificates'])
+    except subprocess.CalledProcessError as e:
+        #print 'ERROR: ' + str(e)
+        return {}
+    regex = re.compile(REGEX)
+    certbot = regex.findall(certbot)
+    for cert in certbot:
+        name = cert[0]
+        certificates[name] = {}
+        certificates[name]['domains'] = cert[1].split(',')
+        certificates[name]['expiry_date'] = cert[2]
+        certificates[name]['valid_days'] = int(cert[3])
+        certificates[name]['cert_path'] = cert[4]
+        certificates[name]['key_path'] = cert[5]
+    return certificates
 
-echo [certbot]
-echo email=$(if [ "$EMAIL_ADDRESS" == '' ]; then echo '--register-unsafely-without-email'; else echo '-m'; fi)
 
-echo [ssl]
-echo diffie_hellman_group=$(if [ -e /etc/ssl/certs/dhparam.pem ]; then echo 'True'; else echo 'False'; fi)
-
-
-echo [certificate]
-echo installed=$(if echo "$CERTIFICATE_INFO" | grep -q "{{ letsencrypt_domain_name }}"; then echo 'True'; else echo 'False'; fi)
-echo domains=$(echo "$CERTIFICATE_INFO" | sed -n -e 's/.*Domains: //p')
-echo expiry_date=$(echo "$CERTIFICATE_INFO" | sed -n -e 's/^.*Expiry Date: \([0-9]\{4\}\-[0-9]\{2\}\-[0-9]\{2\}\).*/\1/p')
-echo valid_days=$(echo "$CERTIFICATE_INFO" | sed -n -e 's/^.*VALID: \([0-9]\{1,2\}\).*/\1/p')
-echo cert_path=$(echo "$CERTIFICATE_INFO" | sed -n -e 's/^.*Certificate Path: \(.*\)/\1/p')
-echo key_path=$(echo "$CERTIFICATE_INFO" | sed -n -e 's/^.*Private Key Path: \(.*\)/\1/p')
+def main():
+    """Main function"""
+    facts = {}
+    facts['certificates'] = certificate_info()
+    print json.dumps(facts)
 
 
-echo [apache]
-
-
-echo [nginx]
+if __name__ == "__main__":
+    main()

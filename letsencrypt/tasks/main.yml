@@ -23,7 +23,8 @@
 
 - name: generate Diffie-Hellman group
   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem {{ diffie_hellman_size }}
-  when: ansible_local[letsencrypt_fact_name]['ssl']['diffie_hellman_group'] != 'True'
+  args:
+    creates: /etc/ssl/certs/dhparam.pem
 
 - name: include webserver tasks
   include: "{{ letsencrypt_webserver }}.yml"

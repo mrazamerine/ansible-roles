@@ -8,7 +8,7 @@
 - name: apply letsencrypt.fact template
   template:
     src: letsencrypt.fact.j2
-    dest: "/etc/ansible/facts.d/{{ letsencrypt_fact_name }}.fact"
+    dest: "/etc/ansible/facts.d/letsencrypt.fact"
     mode: 0755
   register: update_letsencrypt_facts
 

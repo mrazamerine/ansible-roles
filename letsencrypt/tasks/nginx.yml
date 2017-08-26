@@ -9,10 +9,9 @@
     - python-certbot-nginx
 
 - name: create letsencrypt cert
-  shell: "certbot --nginx certonly --agree-tos --quiet {{ ansible_local[letsencrypt_fact_name]['certbot']['email'] }} {{ letsencrypt_email }} -d {{ letsencrypt_domain_name }} {{ letsencrypt_additional_domains }}"
-  when:
-    - ansible_local[letsencrypt_fact_name]['certificate']['installed'] != 'True'
-    - letsencrypt_domain_name is defined
+  shell: "certbot --nginx certonly --agree-tos --quiet -m {{ letsencrypt_email }} -d {{ letsencrypt_domain_name }}"
+  when: (ansible_local['letsencrypt']['certificates'][letsencrypt_domain_name] is undefined) or
+        (ansible_local['letsencrypt']['certificates'][letsencrypt_domain_name]['valid_days'] < 15 )
 
 - name: create ssl config file
   template:
