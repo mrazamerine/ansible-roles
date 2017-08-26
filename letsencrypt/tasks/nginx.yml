@@ -11,7 +11,14 @@
 - name: create letsencrypt cert
   shell: "certbot --nginx certonly --agree-tos --quiet -m {{ letsencrypt_email }} -d {{ letsencrypt_domain_name }}"
   when: (ansible_local['letsencrypt']['certificates'][letsencrypt_domain_name] is undefined) or
-        (ansible_local['letsencrypt']['certificates'][letsencrypt_domain_name]['valid_days'] < 15 )
+        (ansible_local['letsencrypt']['certificates'][letsencrypt_domain_name]['valid_days'] < 15)
+  register: create_letsencrypt_cert
+
+- name: re-check local facts
+  setup:
+    fact_path: /etc/ansible/facts.d
+    filter: ansible_local*
+  when: create_letsencrypt_cert.changed
 
 - name: create ssl config file
   template:
