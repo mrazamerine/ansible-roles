@@ -30,8 +30,8 @@
 
 - name: copy nginx ssl-params config file
   copy:
-    src: ssl-params.conf
-    dest: /etc/nginx/snippets/ssl-params.conf
+    src: ssl-nginx-params.conf
+    dest: /etc/nginx/snippets/ssl-nginx-params.conf
     owner: root
     group: root
     mode: 0644
