@@ -1,0 +1,56 @@
+# Users tasks - main.yml
+---
+- name: create wheel group
+  group:
+    name: wheel
+    state: present
+
+- name: enable passwordless sudo for wheel group
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+
+- name: add new sudo users
+  user:
+    name: "{{ item.value.name }}"
+    comment: "{{ item.value.comment }}"
+    groups: wheel
+    shell: "{{ item.value.shell }}"
+  with_dict: "{{ sudo_users }}"
+  when: sudo_users is defined
+
+- name: add ssh keys to new sudo users
+  authorized_key:
+    user: "{{ item.0.name }}"
+    key: "{{ item.1 }}"
+  with_subelements:
+    - "{{ sudo_users }}"
+    - ssh_keys
+  when: sudo_users is defined
+
+- name: add standard users
+  user:
+    name: "{{ item.value.name }}"
+    comment: "{{ item.value.comment }}"
+    groups: wheel
+    shell: "{{ item.value.shell }}"
+  with_dict: "{{ standard_users }}"
+  when: standard_users is defined
+
+- name: add ssh keys to standard users
+  authorized_key:
+    user: "{{ item.0.name }}"
+    key: "{{ item.1 }}"
+  with_subelements:
+    - "{{ standard_users }}"
+    - ssh_keys
+  when: standard_users is defined
+
+- name: remove users
+  user:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: remove_users is defined
