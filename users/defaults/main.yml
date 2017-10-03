@@ -1,0 +1,5 @@
+# User defaults - main.yml
+---
+force_remove_users: false
+
+remove_user_homes: true

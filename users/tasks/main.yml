@@ -52,5 +52,7 @@
   user:
     name: "{{ item }}"
     state: absent
+    force: "{{ force_remove_users }}"
+    remove: "{{ remove_user_homes }}"
   with_items: "{{ remove_users }}"
   when: remove_users is defined
